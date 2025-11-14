@@ -49,6 +49,7 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        python -m spacy download en_core_web_sm
 
     - name: Setup pgvector extension
       run: |
@@ -76,9 +77,13 @@ jobs:
         CELERY_BROKER_URL: redis://localhost:6379/0
         CELERY_RESULT_BACKEND: redis://localhost:6379/0
         ENVIRONMENT: testing
+        GEMINI_API_KEY: ""
+        ENABLE_GEMINI_SENTIMENT: "false"
+        ENABLE_VADER_BASELINE: "true"
+        KEYWORD_SCHEDULER_ENABLED: "false"
       run: |
         cd backend
-        pytest app/tests -v --cov=app --cov-report=xml --cov-report=term
+        pytest app/tests tests -v --cov=app --cov-report=xml --cov-report=term
     
     - name: Upload coverage
       uses: codecov/codecov-action@v4
